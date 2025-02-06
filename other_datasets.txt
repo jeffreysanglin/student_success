@@ -1,0 +1,3 @@
+Possible Lookalike Datasets
+- https://www.kaggle.com/c/instacart-market-basket-analysis/data?select=departments.csv.zip
+- Online Shoppers datasets: https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset

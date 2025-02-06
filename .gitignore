@@ -1,0 +1,8 @@
+### Data ###
+*.csv
+
+### Py chache ###
+*.pycache
+__pycache__/
+
+
