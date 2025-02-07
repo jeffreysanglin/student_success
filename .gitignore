@@ -1,8 +1,8 @@
 ### Data ###
 *.csv
 
-### Py chache ###
+### Caches and Checkpoints ###
 *.pycache
 __pycache__/
-
+.ipynb_checkpoints/
 
