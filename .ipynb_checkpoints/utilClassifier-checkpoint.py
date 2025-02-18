@@ -2,7 +2,7 @@ from sklearn.preprocessing import StandardScaler, FunctionTransformer
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import mean_squared_error, roc_auc_score, RocCurveDisplay, accuracy_score
+from sklearn.metrics import mean_squared_error, roc_auc_score, RocCurveDisplay, accuracy_score, f1_score, precision_score, recall_score
 from numpy import log1p, arange, where
 from pandas import Series, DataFrame
 
@@ -10,7 +10,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 class Classifier():
-    def __init__(self, data, X, y, estimator, gparams_dict, normalize=False, scale_cols=None, log_cols=None, SD=42):
+    def __init__(self, data, X, y, estimator, gparams_dict, normalize=False, scale_cols=None, log_cols=None, SD=42, train_test_tuple=None, verbose=False):
         """
         Create a classifier object where we can plug in all our settings and hyperparameters.
         """
@@ -35,7 +35,14 @@ class Classifier():
         self.y = self.data[y]
         
         #Train Test Split
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=0.33, stratify=self.y, random_state=self.SD)
+        if train_test_tuple is not None:
+            if verbose:
+                print(f"Train/Test Split provided")
+            self.X_train, self.X_test, self.y_train, self.y_test = train_test_tuple
+        else:
+            if verbose:
+                print(f"Creating a fresh train_test_split")
+            self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.X, self.y, test_size=0.33, stratify=self.y, random_state=self.SD)
         
         #Instantiate model and hyperparams
         self.estimator=estimator(random_state=self.SD)
@@ -57,7 +64,10 @@ class Classifier():
         """
         self.y_preds = self.gscv_.predict(self.X_test)
         print(f"RMSE: {mean_squared_error(self.y_test, self.y_preds)**(1/2)}")
-        print(f"Accuracy Score: {accuracy_score(self.y_test, self.y_preds)}")
+        #print(f"Accuracy Score: {accuracy_score(self.y_test, self.y_preds)}")
+        print(f"Micro Avg F1: {f1_score(self.y_test, self.y_preds, average='micro')}")
+        #print(f"Micro Avg Precision: {precision_score(self.y_test, self.y_preds, average='micro')}")
+        #print(f"Micro Avg Recall: {recall_score(self.y_test, self.y_preds, average='micro')}")
         self.y_proba = self.gscv_.predict_proba(self.X_test)[:,1]
         
         # Identify misclassified examples
